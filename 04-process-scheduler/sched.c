@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <signal.h>
 #include <err.h>
  
 #define NLOOP_FOR_ESTIMATION 1000000000UL
