@@ -18,12 +18,12 @@ static void child_fn(char *p) {
 	printf("*** child ps info before memory access ***:\n");
 	fflush(stdout);
 	snprintf(command, COMMAND_SIZE,
-		 "ps -o pid,comm,vsz,rss,min_flt,maj_flt | grep ^%d",
+		 "ps -o pid,comm,vsz,rss,minflt,majflt | grep ^%d",
 		 getpid());	
 	system(command);
 	printf("*** free memory info before memory access ***:\n");
 	fflush(stdout);
-	system("free");
+	system("memory_pressure");
 
 	int i;
 	for (i = 0; i < BUFFER_SIZE; i += PAGE_SIZE)
@@ -35,7 +35,7 @@ static void child_fn(char *p) {
 
 	printf("*** free memory info after memory access ***:\n");
 	fflush(stdout);
-	system("free");
+	system("memory_pressure");
 
 	exit(EXIT_SUCCESS);
 }
@@ -59,7 +59,7 @@ int main(void)
 
 	printf("*** free memory info before fork ***:\n");
 	fflush(stdout);
-	system("free");
+	system("memory_pressure");
 
 	pid_t ret;
 	ret = fork();

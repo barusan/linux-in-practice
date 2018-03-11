@@ -20,10 +20,10 @@ int main(void)
 	pid_t pid;
 
 	pid = getpid();
-	snprintf(command, BUFFER_SIZE, "cat /proc/%d/maps", pid);
 
 	puts("*** memory map before mapping file ***");
 	fflush(stdout);
+	snprintf(command, BUFFER_SIZE, "vmmap %d | tee /tmp/vmmap.before", pid);
 	system(command);
 
 	int fd;
@@ -45,7 +45,12 @@ int main(void)
 	puts("");
 	puts("*** memory map after mapping file ***");
 	fflush(stdout);
+	snprintf(command, BUFFER_SIZE, "vmmap %d | tee /tmp/vmmap.after", pid);
 	system(command);
+
+	puts("*** diff ***");
+	fflush(stdout);
+	system("diff -u /tmp/vmmap.before /tmp/vmmap.after");
 
 	puts("");
 	printf("*** file contens before overwrite mapped region: %s", file_contents);

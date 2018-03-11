@@ -14,10 +14,10 @@ int main(void)
 	pid_t pid;
 
 	pid = getpid();
-	snprintf(command, BUFFER_SIZE, "cat /proc/%d/maps", pid);
 
 	puts("*** memory map before memory allocation ***");
 	fflush(stdout);
+	snprintf(command, BUFFER_SIZE, "vmmap %d | tee /tmp/vmmap.before", pid);
 	system(command);
 
 	void *new_memory;
@@ -32,7 +32,12 @@ int main(void)
 	
 	puts("*** memory map after memory allocation ***");
 	fflush(stdout);
+	snprintf(command, BUFFER_SIZE, "vmmap %d | tee /tmp/vmmap.after", pid);
 	system(command);
+
+	puts("*** diff ***");
+	fflush(stdout);
+	system("diff -u /tmp/vmmap.before /tmp/vmmap.after");
 
 	if (munmap(new_memory, ALLOC_SIZE) == -1)
 		err(EXIT_FAILURE, "munmap() failed");
